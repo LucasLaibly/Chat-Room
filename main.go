@@ -3,14 +3,25 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	http.Handle("/", http.FileServer(http.Dir("./public")))
 
-	log.Print("Server starting on localhost:8080")
+	err := godotenv.Load()
 
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	port := os.Getenv("PORT")
+
+	log.Print("Server running on localhost:" + port)
+
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		log.Fatal(err)
 	}
 }
