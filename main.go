@@ -5,7 +5,12 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/joho/godotenv"
+)
+
+var (
+	rdb *redis.Client
 )
 
 func main() {
@@ -18,6 +23,17 @@ func main() {
 	}
 
 	port := os.Getenv("PORT")
+	redisUrl := os.Getenv("REDIS_URL")
+
+	if err != nil {
+		panic(err)
+	}
+
+	rdb = redis.NewClient(&redis.Options{
+		Addr:     redisUrl,
+		Password: "",
+		DB:       0,
+	})
 
 	log.Print("Server running on localhost:" + port)
 
